@@ -7,7 +7,7 @@ export class BasketModel implements IBasketModel {
   constructor() {}
 
   add(itemId: string): void {
-    if (!this.items.includes(itemId)) {
+    if (!this.hasItem(itemId)) {
       this.items.push(itemId);
     }
   }
@@ -27,5 +27,17 @@ export class BasketModel implements IBasketModel {
 
   setTotal(total: number): void {
     this.total = total;
+  }
+
+  getItems(): string[] {
+    return this.items;
+  }
+
+  getTotalCount(): number {
+    return this.items.length;
+  }
+
+  hasItem(id: string): boolean {
+    return this.items.includes(id);
   }
 }

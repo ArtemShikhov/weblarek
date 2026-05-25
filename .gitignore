@@ -2,11 +2,10 @@ node_modules/
 dist/
 build/
 coverage/
-.nyc_output/
 .env
+.DS_Store
 .vscode/
 .idea/
-.DS_Store
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -14,6 +13,7 @@ yarn-error.log*
 .pnp/
 .pnp.js
 lib/
+temp/
 tmp/
 .sass-cache/
 .cache/

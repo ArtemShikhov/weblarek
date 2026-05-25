@@ -25,7 +25,7 @@ export class OrderModel implements IOrderModel {
         this.phone = value;
         break;
       case 'items':
-        this.items = value.split(',') as string[]; // преобразуем строку в массив
+        this.items = Array.isArray(value) ? value : value.split(',').filter(item => item.trim());
         break;
       case 'total':
         this.total = Number(value);
@@ -35,10 +35,22 @@ export class OrderModel implements IOrderModel {
     }
   }
 
-  validate(): boolean {
-    return this.payment !== '' && 
-           this.address !== '' && 
-           this.email !== '' && 
-           this.phone !== '';
+  validate(): {[field: string]: string} {
+    const errors: {[field: string]: string} = {};
+
+    if (!this.payment) {
+      errors.payment = 'Не выбран способ оплаты';
+    }
+    if (!this.address) {
+      errors.address = 'Укажите адрес доставки';
+    }
+    if (!this.email) {
+      errors.email = 'Укажите email';
+    }
+    if (!this.phone) {
+      errors.phone = 'Укажите телефон';
+    }
+
+    return errors;
   }
 }
