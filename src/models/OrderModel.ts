@@ -1,19 +1,17 @@
 import { IOrderModel } from '../types';
 
 export class OrderModel implements IOrderModel {
-  payment: string = '';
+  payment: 'card' | 'cash' | '' = '';
   address: string = '';
   email: string = '';
   phone: string = '';
-  items: string[] = [];
-  total: number = 0;
 
   constructor() {}
 
-  setField(field: string, value: string): void {
+  setField(field: 'payment' | 'address' | 'email' | 'phone', value: string): void {
     switch(field) {
       case 'payment':
-        this.payment = value;
+        this.payment = value as 'card' | 'cash' | '';
         break;
       case 'address':
         this.address = value;
@@ -24,19 +22,13 @@ export class OrderModel implements IOrderModel {
       case 'phone':
         this.phone = value;
         break;
-      case 'items':
-        this.items = Array.isArray(value) ? value : value.split(',').filter(item => item.trim());
-        break;
-      case 'total':
-        this.total = Number(value);
-        break;
       default:
         throw new Error(`Поле ${field} не существует в модели заказа`);
     }
   }
 
-  validate(): {[field: string]: string} {
-    const errors: {[field: string]: string} = {};
+  validate(): Partial<Record<keyof Pick<IOrderModel, 'payment' | 'address' | 'email' | 'phone'>, string>> {
+    const errors: Partial<Record<keyof Pick<IOrderModel, 'payment' | 'address' | 'email' | 'phone'>, string>> = {};
 
     if (!this.payment) {
       errors.payment = 'Не выбран способ оплаты';

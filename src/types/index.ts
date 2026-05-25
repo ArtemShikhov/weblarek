@@ -20,7 +20,7 @@ export interface IProduct {
 
 // Интерфейс покупателя
 export interface IBuyer {
-    payment: TPayment;
+    payment: TPayment | '';
     email: string;
     phone: string;
     address: string;
@@ -38,26 +38,36 @@ export interface IOrderResult {
     total: number;
 }
 
+// Тип для ответа от сервера при получении списка товаров
+export interface IApiListResponse<T> {
+    items: T[];
+    total: number;
+}
+
+// Тип для ошибок валидации покупателя
+export type BuyerErrors = Partial<Record<keyof IBuyer, string>>;
+
 // Интерфейсы моделей
 export interface ICatalogModel {
-    items: IProduct[];
     setItems(items: IProduct[]): void;
     getItemById(id: string): IProduct | undefined;
 }
 
 export interface IBasketModel {
-    items: string[];
-    total: number;
     add(itemId: string): void;
     remove(itemId: string): void;
     clear(): void;
     getTotal(): number;
-    setTotal(total: number): void;
+    getItems(): IProduct[];
+    getTotalCount(): number;
+    hasItem(id: string): boolean;
 }
 
-export interface IOrderModel extends IBuyer {
-    items: string[];
-    total: number;
-    setField(field: string, value: string): void;
-    validate(): boolean;
+export interface IOrderModel {
+    payment: TPayment | '';
+    address: string;
+    email: string;
+    phone: string;
+    setField(field: 'payment' | 'address' | 'email' | 'phone', value: string): void;
+    validate(): BuyerErrors;
 }

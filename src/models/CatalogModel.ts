@@ -1,7 +1,7 @@
 import { ICatalogModel, IProduct } from '../types';
 
 export class CatalogModel implements ICatalogModel {
-  items: IProduct[] = [];
+  private items: IProduct[] = [];
 
   constructor() {}
 
@@ -11,9 +11,5 @@ export class CatalogModel implements ICatalogModel {
 
   getItemById(id: string): IProduct | undefined {
     return this.items.find(item => item.id === id);
-  }
-
-  getItems(): IProduct[] {
-    return this.items;
   }
 }

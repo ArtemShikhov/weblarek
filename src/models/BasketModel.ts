@@ -1,10 +1,9 @@
-import { IBasketModel } from '../types';
+import { IBasketModel, IProduct } from '../types';
 
 export class BasketModel implements IBasketModel {
-  items: string[] = [];
-  total: number = 0;
+  private items: string[] = [];
 
-  constructor() {}
+  constructor(private catalog: { getProductById: (id: string) => IProduct | undefined }) {}
 
   add(itemId: string): void {
     if (!this.hasItem(itemId)) {
@@ -18,19 +17,17 @@ export class BasketModel implements IBasketModel {
 
   clear(): void {
     this.items = [];
-    this.total = 0;
   }
 
   getTotal(): number {
-    return this.total;
+    return this.items.reduce((sum, id) => {
+      const product = this.catalog.getProductById(id);
+      return sum + (product?.price || 0);
+    }, 0);
   }
 
-  setTotal(total: number): void {
-    this.total = total;
-  }
-
-  getItems(): string[] {
-    return this.items;
+  getItems(): IProduct[] {
+    return this.items.map(id => this.catalog.getProductById(id)).filter(Boolean) as IProduct[];
   }
 
   getTotalCount(): number {

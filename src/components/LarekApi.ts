@@ -1,22 +1,28 @@
-import { Api, IApi } from '../components/base/Api';
-import { IProduct, IOrder, IOrderResult } from '../types';
+import { IApi } from '../types';
+import { IProduct, IOrder, IOrderResult, IApiListResponse } from '../types';
 
 export interface ILarekApi extends IApi {
   getProductList: () => Promise<IProduct[]>;
   postOrder: (order: IOrder) => Promise<IOrderResult>;
 }
 
-export class LarekApi extends Api implements ILarekApi {
-  constructor(baseUrl: string) {
-    super(baseUrl);
+export class LarekApi implements ILarekApi {
+  constructor(private api: IApi) {}
+
+  get<T extends object>(uri: string): Promise<T> {
+    return this.api.get<T>(uri);
+  }
+
+  post<T extends object>(uri: string, data: object): Promise<T> {
+    return this.api.post<T>(uri, data);
   }
 
   getProductList(): Promise<IProduct[]> {
-    return this.get('/products')
-      .then((data: { items: IProduct[] }) => data.items);
+    return this.get<IApiListResponse<IProduct>>('/products')
+      .then((data) => data.items);
   }
 
   postOrder(order: IOrder): Promise<IOrderResult> {
-    return this.post('/order', order);
+    return this.post<IOrderResult>('/order', order);
   }
 }
