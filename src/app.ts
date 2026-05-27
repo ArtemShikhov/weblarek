@@ -1,35 +1,22 @@
-import { LarekApi } from './components/LarekApi';
-import { EventEmitter } from './components/base/Events';
 import { Api } from './components/base/Api';
+import { LarekApi } from './components/LarekApi';
 import { CatalogModel } from './models/CatalogModel';
-import { BasketModel } from './models/BasketModel';
-import { OrderModel } from './models/OrderModel';
+import { IProduct, IApiListResponse } from './types';
 
-// Создаем экземпляр EventEmitter
-const events = new EventEmitter();
-
-// Создаем базовый API с указанием базового URL из констант
-const API_URL = `${import.meta.env.VITE_API_ORIGIN}/api/weblarek`;
-const baseApi = new Api(API_URL);
-
-// Создаем LarekApi с использованием базового API
+const baseApi = new Api('https://larek-api.nomoreparties.co', {});
 const api = new LarekApi(baseApi);
 
 // Создаем модели данных
 const catalogModel = new CatalogModel();
-const basketModel = new BasketModel({
-  getProductById: (id: string) => catalogModel.getItemById(id)
-});
-const orderModel = new OrderModel();
 
 // Загрузка продуктов с сервера
 api.getProductList()
-  .then(products => {
-    catalogModel.setItems(products);
-    console.log('Товары успешно загружены:', products);
+  .then((products: IApiListResponse<IProduct>) => {
+    catalogModel.setItems(products.items);
+    console.log('Products loaded:', catalogModel.getItems());
   })
-  .catch(error => {
-    console.error('Ошибка при загрузке товаров:', error);
+  .catch((error) => {
+    console.error('Error loading products:', error);
   });
 
 console.log('Приложение инициализировано');
