@@ -9,7 +9,7 @@ export class LarekApi implements ILarekApi {
   constructor(private api: IApi) {}
 
   getProductList(): Promise<IApiListResponse<IProduct>> {
-    return this.api.get<IApiListResponse<IProduct>>('/products');
+    return this.api.get<IApiListResponse<IProduct>>('/product/');
   }
 
   postOrder(order: IOrder): Promise<IOrderResult> {

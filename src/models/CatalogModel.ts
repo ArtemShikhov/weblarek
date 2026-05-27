@@ -14,6 +14,6 @@ export class CatalogModel implements ICatalogModel {
   }
 
   getItems(): IProduct[] {
-    return [...this.items];
+    return this.items;
   }
 }

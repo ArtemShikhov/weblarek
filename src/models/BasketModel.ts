@@ -24,7 +24,7 @@ export class BasketModel implements IBasketModel {
   }
 
   getItems(): IProduct[] {
-    return [...this.items];
+    return this.items;
   }
 
   getTotalCount(): number {

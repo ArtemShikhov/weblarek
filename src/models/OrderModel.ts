@@ -1,10 +1,10 @@
 import { IOrderModel, TPayment, BuyerErrors } from '../types';
 
 export class OrderModel implements IOrderModel {
-  payment: TPayment | '' = '';
-  address: string = '';
-  email: string = '';
-  phone: string = '';
+  private payment: TPayment | '' = '';
+  private address: string = '';
+  private email: string = '';
+  private phone: string = '';
 
   constructor() {}
 
@@ -45,5 +45,14 @@ export class OrderModel implements IOrderModel {
     }
     
     return errors;
+  }
+
+  getData() {
+    return { 
+      payment: this.payment, 
+      address: this.address, 
+      email: this.email, 
+      phone: this.phone 
+    };
   }
 }

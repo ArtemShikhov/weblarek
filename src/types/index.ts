@@ -13,7 +13,7 @@ export interface IApiListResponse<T> {
 }
 
 export interface IOrder {
-	payment: 'card' | 'cash' | '';
+	payment: TPayment;
 	email: string;
 	phone: string;
 	address: string;
@@ -43,15 +43,12 @@ export interface IBasketModel {
 }
 
 export interface IOrderModel {
-	payment: 'card' | 'cash' | '';
-	address: string;
-	email: string;
-	phone: string;
 	setField(field: 'payment' | 'address' | 'email' | 'phone', value: string): void;
-	validate(): Partial<Record<keyof Pick<IOrderModel, 'payment' | 'address' | 'email' | 'phone'>, string>>;
+	validate(): BuyerErrors;
+	getData(): { payment: string, address: string, email: string, phone: string };
 }
 
-export type TPayment = 'card' | 'cash' | '';
+export type TPayment = 'card' | 'cash';
 
 export interface IBuyer {
 	payment: TPayment;
