@@ -1,7 +1,7 @@
-import { IOrderModel } from '../types';
+import { IOrderModel, TPayment, BuyerErrors } from '../types';
 
 export class OrderModel implements IOrderModel {
-  payment: 'card' | 'cash' | '' = '';
+  payment: TPayment | '' = '';
   address: string = '';
   email: string = '';
   phone: string = '';
@@ -11,7 +11,7 @@ export class OrderModel implements IOrderModel {
   setField(field: 'payment' | 'address' | 'email' | 'phone', value: string): void {
     switch(field) {
       case 'payment':
-        this.payment = value as 'card' | 'cash' | '';
+        this.payment = value as TPayment;
         break;
       case 'address':
         this.address = value;
@@ -22,27 +22,28 @@ export class OrderModel implements IOrderModel {
       case 'phone':
         this.phone = value;
         break;
-      default:
-        throw new Error(`Поле ${field} не существует в модели заказа`);
     }
   }
 
-  validate(): Partial<Record<keyof Pick<IOrderModel, 'payment' | 'address' | 'email' | 'phone'>, string>> {
-    const errors: Partial<Record<keyof Pick<IOrderModel, 'payment' | 'address' | 'email' | 'phone'>, string>> = {};
-
+  validate(): BuyerErrors {
+    const errors: BuyerErrors = {};
+    
     if (!this.payment) {
-      errors.payment = 'Не выбран способ оплаты';
+      errors.payment = 'Необходимо выбрать способ оплаты';
     }
+    
     if (!this.address) {
-      errors.address = 'Укажите адрес доставки';
+      errors.address = 'Необходимо указать адрес';
     }
+    
     if (!this.email) {
-      errors.email = 'Укажите email';
+      errors.email = 'Необходимо указать email';
     }
+    
     if (!this.phone) {
-      errors.phone = 'Укажите телефон';
+      errors.phone = 'Необходимо указать телефон';
     }
-
+    
     return errors;
   }
 }

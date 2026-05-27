@@ -1,18 +1,18 @@
 import { IBasketModel, IProduct } from '../types';
 
 export class BasketModel implements IBasketModel {
-  private items: string[] = [];
+  private items: IProduct[] = [];
 
-  constructor(private catalog: { getProductById: (id: string) => IProduct | undefined }) {}
+  constructor() {}
 
-  add(itemId: string): void {
-    if (!this.hasItem(itemId)) {
-      this.items.push(itemId);
+  add(product: IProduct): void {
+    if (!this.hasItem(product.id)) {
+      this.items.push(product);
     }
   }
 
-  remove(itemId: string): void {
-    this.items = this.items.filter(id => id !== itemId);
+  remove(productId: string): void {
+    this.items = this.items.filter(item => item.id !== productId);
   }
 
   clear(): void {
@@ -20,14 +20,11 @@ export class BasketModel implements IBasketModel {
   }
 
   getTotal(): number {
-    return this.items.reduce((sum, id) => {
-      const product = this.catalog.getProductById(id);
-      return sum + (product?.price || 0);
-    }, 0);
+    return this.items.reduce((sum, product) => sum + (product.price || 0), 0);
   }
 
   getItems(): IProduct[] {
-    return this.items.map(id => this.catalog.getProductById(id)).filter(Boolean) as IProduct[];
+    return [...this.items];
   }
 
   getTotalCount(): number {
@@ -35,6 +32,6 @@ export class BasketModel implements IBasketModel {
   }
 
   hasItem(id: string): boolean {
-    return this.items.includes(id);
+    return this.items.some(item => item.id === id);
   }
 }
