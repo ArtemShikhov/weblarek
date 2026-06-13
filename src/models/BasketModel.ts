@@ -1,37 +1,84 @@
-import { IBasketModel, IProduct } from '../types';
+import { IEvents } from '../components/base/Events';
+import { IProduct } from '../types';
 
-export class BasketModel implements IBasketModel {
-  private items: IProduct[] = [];
+export class BasketModel {
+	private _items: IProduct[] = [];
+	private _events: IEvents;
 
-  constructor() {}
+	constructor(events: IEvents) {
+		this._events = events;
+	}
 
-  add(product: IProduct): void {
-    if (!this.hasItem(product.id)) {
-      this.items.push(product);
-    }
-  }
+	/**
+	 * Добавляет товар в корзину
+	 */
+	add(product: IProduct) {
+		if (!this.hasItem(product.id)) {
+			this._items.push(product);
+			this._events.emit('basket:changed', { 
+				items: this._items, 
+				total: this.getTotal(), 
+				totalCount: this.getTotalCount() 
+			});
+		}
+	}
 
-  remove(productId: string): void {
-    this.items = this.items.filter(item => item.id !== productId);
-  }
+	/**
+	 * Удаляет товар из корзины
+	 */
+	remove(productId: string) {
+		this._items = this._items.filter(item => item.id !== productId);
+		this._events.emit('basket:changed', { 
+			items: this._items, 
+			total: this.getTotal(), 
+			totalCount: this.getTotalCount() 
+		});
+	}
 
-  clear(): void {
-    this.items = [];
-  }
+	/**
+	 * Очищает корзину
+	 */
+	clear() {
+		this._items = [];
+		this._events.emit('basket:changed', { 
+			items: this._items, 
+			total: this.getTotal(), 
+			totalCount: this.getTotalCount() 
+		});
+	}
 
-  getTotal(): number {
-    return this.items.reduce((sum, product) => sum + (product.price || 0), 0);
-  }
+	/**
+	 * Получает все товары в корзине
+	 */
+	getItems(): IProduct[] {
+		return this._items;
+	}
 
-  getItems(): IProduct[] {
-    return this.items;
-  }
+	/**
+	 * Получает общую стоимость товаров в корзине
+	 */
+	getTotal(): number {
+		return this._items.reduce((sum, item) => sum + (item.price || 0), 0);
+	}
 
-  getTotalCount(): number {
-    return this.items.length;
-  }
+	/**
+	 * Получает общее количество товаров в корзине
+	 */
+	getTotalCount(): number {
+		return this._items.length;
+	}
 
-  hasItem(id: string): boolean {
-    return this.items.some(item => item.id === id);
-  }
+	/**
+	 * Проверяет, есть ли товар в корзине
+	 */
+	hasItem(id: string): boolean {
+		return this._items.some(item => item.id === id);
+	}
+
+	/**
+	 * Проверяет, можно ли оформить заказ
+	 */
+	canOrder(): boolean {
+		return this._items.length > 0;
+	}
 }
