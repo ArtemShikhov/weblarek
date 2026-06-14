@@ -54,13 +54,6 @@ export class OrderModel {
 			errors.phone = 'Не указан телефон';
 		}
 
-		// Emit validation result events
-		if (Object.keys(errors).length > 0) {
-			this.events.emit('order:invalid', { errors });
-		} else {
-			this.events.emit('order:valid', { isValid: true });
-		}
-
 		return errors;
 	}
 
@@ -81,6 +74,5 @@ export class OrderModel {
 		this.events.emit('order:changed', { 
 			order: this.getData()
 		});
-		this.events.emit('order:clear', {});
 	}
 }

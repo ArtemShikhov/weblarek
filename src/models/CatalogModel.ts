@@ -3,6 +3,7 @@ import { IProduct } from '../types';
 
 export class CatalogModel {
 	private _items: IProduct[] = [];
+	private _selectedProduct: IProduct | null = null;
 	private events: IEvents;
 
 	constructor(events: IEvents) {
@@ -14,12 +15,6 @@ export class CatalogModel {
 		this.events.emit('catalog:changed', { items });
 	}
 
-	// Метод для добавления отдельного товара
-	addItem(item: IProduct) {
-		this._items.push(item);
-		this.events.emit('catalog:changed', { items: this._items });
-	}
-
 	getItemById(id: string): IProduct | undefined {
 		return this._items.find(item => item.id === id);
 	}
@@ -28,15 +23,14 @@ export class CatalogModel {
 		return this._items;
 	}
 
-	// Метод для обновления отдельного товара
-	updateItem(id: string, updates: Partial<IProduct>): IProduct | undefined {
-		const index = this._items.findIndex(item => item.id === id);
-		if (index !== -1) {
-			this._items[index] = { ...this._items[index], ...updates };
-			this.events.emit('catalog:item:updated', { item: this._items[index] });
-			this.events.emit('catalog:changed', { items: this._items });
-			return this._items[index];
-		}
-		return undefined;
+	// Метод для установки выбранного продукта
+	setSelectedProduct(product: IProduct | null) {
+		this._selectedProduct = product;
+		this.events.emit('product:selected', { product });
+	}
+
+	// Метод для получения выбранного продукта
+	getSelectedProduct(): IProduct | null {
+		return this._selectedProduct;
 	}
 }

@@ -1,43 +1,35 @@
-import { View } from './View';
+import { BaseCard } from './BaseCard';
 import { IEvents } from '../base/Events';
 import { IProduct } from '../../types';
 import { categoryMap } from '../../utils/constants';
 
-export class ProductCard extends View<IProduct> {
-	protected _title: HTMLElement;
+export class ProductCard extends BaseCard {
 	protected _image: HTMLImageElement;
 	protected _category: HTMLElement;
 	protected _price: HTMLElement;
 	protected _description: HTMLElement;
 	protected _button: HTMLButtonElement;
 
-	constructor(container: HTMLElement, events: IEvents) {
+	constructor(container: HTMLElement, events: IEvents, onSelect: () => void) {
 		super(container, events);
 
-		this._title = container.querySelector('.card__title')!;
 		this._image = container.querySelector('.card__image')!;
 		this._category = container.querySelector('.card__category')!;
 		this._price = container.querySelector('.card__price')!;
 		this._description = container.querySelector('.card__text')!;
 		this._button = container.querySelector('.card__button')!;
 
+		// Устанавливаем обработчик клика на всю карточку
+		container.addEventListener('click', onSelect);
+		
+		// Также сохраняем ссылку на кнопку для установки состояния
 		if (this._button) {
-			this._button.addEventListener('click', () => {
-				this.events.emit('product:select', { id: this.id });
+			// Предотвращаем двойное срабатывание при клике на кнопку
+			this._button.addEventListener('click', (e) => {
+				e.stopPropagation();
+				onSelect();
 			});
 		}
-	}
-
-	set id(value: string) {
-		this.container.dataset.id = value;
-	}
-
-	get id(): string {
-		return this.container.dataset.id || '';
-	}
-
-	set title(value: string) {
-		this._title.textContent = value;
 	}
 
 	set image(value: string) {
