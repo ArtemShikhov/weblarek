@@ -9,6 +9,7 @@ export class ProductCard extends BaseCard {
 	protected _price: HTMLElement;
 	protected _description: HTMLElement;
 	protected _button: HTMLButtonElement;
+	id: string;
 
 	constructor(container: HTMLElement, events: IEvents, onSelect: () => void) {
 		super(container, events);
