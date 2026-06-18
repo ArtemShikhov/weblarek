@@ -15,18 +15,18 @@ export class OrderForm extends Form<IOrder> {
 		// Add event listeners for payment buttons 
 		this._paymentButtons.forEach(button => { 
 			button.addEventListener('click', (evt) => { 
-				const target = evt.currentTarget as HTMLElement;
-				const name = target.getAttribute('name');
-				if(name) {
-					// Remove active class from all buttons
-					this._paymentButtons.forEach(btn => btn.classList.remove('button_alt-active'));
-					// Add active class to clicked button
-					target.classList.add('button_alt-active');
-					this.events.emit('order:change', { 
-						field: 'payment', 
-						value: name 
-					}); 
-				}
+				const target = evt.currentTarget as HTMLElement; 
+				const name = target.getAttribute('name'); 
+				if(name) { 
+					// Remove active class from all buttons 
+					this._paymentButtons.forEach(btn => btn.classList.remove('button_alt-active')); 
+					// Add active class to clicked button 
+					target.classList.add('button_alt-active'); 
+					this.events.emit('order:change', {  
+						field: 'payment',  
+						value: name  
+					});  
+				} 
 			}); 
 		}); 
 
@@ -39,6 +39,12 @@ export class OrderForm extends Form<IOrder> {
 				}); 
 			}); 
 		} 
+		
+		// Add event listener for form submission
+		container.addEventListener('submit', (event) => {
+			event.preventDefault();
+			this.events.emit('order:submit');
+		});
 	} 
 
 
@@ -48,12 +54,12 @@ export class OrderForm extends Form<IOrder> {
 
 	set payment(value: TPayment) { 
 		this._paymentButtons.forEach(button => { 
-			const name = button.getAttribute('name');
-			if(name === value) {
-				button.classList.add('button_alt-active');
-			} else {
-				button.classList.remove('button_alt-active');
-			}
+			const name = button.getAttribute('name'); 
+			if(name === value) { 
+				button.classList.add('button_alt-active'); 
+			} else { 
+				button.classList.remove('button_alt-active'); 
+			} 
 		}); 
 	} 
 

@@ -13,7 +13,7 @@ export interface IApiListResponse<T> {
 } 
 
 export interface IOrder extends IBuyer { 
-	products: string[]; 
+	items: string[]; 
 	total: number; 
 } 
 

@@ -1,4 +1,4 @@
-import { IApi, IProduct, IOrder, IOrderResult } from '../types';
+import { IApi, IProduct, IOrder, IOrderResult, IApiListResponse } from '../types';
 
 export interface ILarekApi {
   getProductList: () => Promise<IApiListResponse<IProduct>>;
@@ -13,22 +13,6 @@ export class LarekApi implements ILarekApi {
   }
 
   postOrder(order: IOrder): Promise<IOrderResult> {
-    // Преобразуем объект заказа для соответствия ожидаемому формату API
-    // API может ожидать поле 'items' вместо 'products'
-    const orderForApi = {
-      ...order,
-      items: order.products, // Преобразуем products в items для API
-      products: undefined // Удаляем оригинальное поле, чтобы избежать конфликта
-    };
-    
-    // Удалим undefined поля
-    const cleanedOrder = Object.keys(orderForApi).reduce((acc, key) => {
-      if (orderForApi[key] !== undefined) {
-        acc[key] = orderForApi[key];
-      }
-      return acc;
-    }, {});
-
-    return this.api.post<IOrderResult>('/order', cleanedOrder);
+    return this.api.post<IOrderResult>('/order', order);
   }
 }
